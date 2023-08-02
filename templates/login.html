@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST">
+    <h1>enter the chatroom</h1>
+        <input type="text" name="name" placeholder="name" value="{{name}}">
+        <input type="text" name="roomcode" placeholder="roomcode" value="{{roomcode}}">
+        <button type="submit" name="create">create</button>
+        <button type="submit" name="join">join</button>
+</form>
+<div class="erreur">
+    {% if erreur %}
+    {{ erreur }}
+    {% endif %}
+</div>
+{% endblock %}

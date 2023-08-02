@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+    <div style="text-align: center;">room code : {{ id }}</div>
+    <br><br><br>
+    <div style="display: flex; flex-direction: column; align-items:center; justify-content: center; width:100%">
+        <div id="msgs" style="background-color: rgb(245, 245, 245); padding: 5px ;width: 70%;height:550px; border:solid 3px; overflow-y: scroll;">
+            {% for msg in messages %}
+            <div >
+                <span>
+                    <strong>{{ msg.name }}</strong> : {{ msg.message }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="msg" style="width: 70%; display: flex; flex-direction: row;" >
+                <input type="text" style="resize:none; width: 90%; height: 20px;" id="message">
+                <button type="button" name="send" style="width: 10%; height: 25px;" onClick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- making the page refresh automatically -->
+    <script type="text/javascript">
+        var socketio = io();
+        socketio.on("connect",()=>{
+            console.log("Your connected")
+        })
+        const messages = document.getElementById("msgs")
+        socketio.on("message",(data)=>{
+            createMessage(data.name, data.message)
+        })
+        const createMessage = (name,msg) => {
+            const cont = 
+            `
+            <div >
+                <span>
+                    <strong>${name}</strong> : ${msg}
+                </span>
+            </div>
+            `;
+            console.log("someone connected")
+            // inserting the message to the div so it will be showed
+            messages.innerHTML += cont;
+        }
+
+        // seding the message to the server
+        
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value == "") return;
+    socketio.emit("sending", { data: message.value });
+    message.value = "";
+  };
+    </script>
+</body>
+</html>
+{% endblock %}
